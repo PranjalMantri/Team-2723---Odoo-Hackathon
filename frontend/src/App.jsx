@@ -1,9 +1,9 @@
 import ListItemForm from './components/ListItemForm';
 import SignupForm from './components/SignupForm';
 import LoginForm from './components/LoginForm'
-import ItemDetail from './components/ItemDetail';
 import UserProfile from './components/UserProfile';
 import AdminPanel from './components/AdminPanel';
+
 
 const App=()=> {
   const item = {
