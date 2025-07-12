@@ -34,7 +34,7 @@ const UserProfile = ({ user }) => {
           />
           <h1 className="text-2xl font-bold">{user.name}</h1>
           <p className="text-emerald-600">@{user.username}</p>
-          <p className="text-emerald-600">Joined {user.joinedYear}</p>
+          <p className="text-black-600">Joined {user.joinedYear}</p>
           <button className="mt-2 px-4 py-2 bg-emerald-100 text-emerald-800 rounded-full font-semibold hover:bg-emerald-200">
             Edit Profile
           </button>
