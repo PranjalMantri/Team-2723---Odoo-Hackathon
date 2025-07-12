@@ -195,4 +195,23 @@ const deleteItem = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllItems, createItem, getItemById, updateItem, deleteItem };
+const getUserItems = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const items = await Item.find({ userId }).sort({ createdAt: -1 });
+
+    res.json(items);
+  } catch (error: any) {
+    console.error("Error getting user items:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export {
+  getAllItems,
+  createItem,
+  getItemById,
+  updateItem,
+  deleteItem,
+  getUserItems,
+};
