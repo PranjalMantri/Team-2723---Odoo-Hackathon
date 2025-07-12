@@ -113,4 +113,23 @@ const getAllItems = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllItems, createItem };
+const getItemById = async (req: Request, res: Response) => {
+  try {
+    const item = await Item.findById(req.params.id).populate(
+      "userId",
+      "fullName profilePictureUrl"
+    );
+
+    if (!item || !item.isApproved || item.status !== "available") {
+      return res
+        .status(404)
+        .json({ message: "Item not found or not available" });
+    }
+    res.json(item);
+  } catch (error: any) {
+    console.error("Error getting item by ID:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export { getAllItems, createItem, getItemById };
