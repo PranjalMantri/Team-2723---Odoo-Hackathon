@@ -50,3 +50,17 @@ export const createItemSchema = z.object({
   price: z.number().min(0, { message: "Price must be a positive number." }),
   tags: z.array(z.string()).optional(),
 });
+
+export const updateItemSchema = z.object({
+  title: z
+    .string()
+    .min(3, { message: "Title must be at least 3 characters long." })
+    .max(100, { message: "Title cannot exceed 100 characters." }),
+  description: z
+    .string()
+    .min(10, { message: "Description must be at least 10 characters long." })
+    .max(1000, { message: "Description cannot exceed 1000 characters." }),
+  category: CategoryEnum,
+  size: SizeEnum,
+  condition: ConditionEnum,
+});

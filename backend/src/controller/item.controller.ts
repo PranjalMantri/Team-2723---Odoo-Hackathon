@@ -2,9 +2,8 @@ import { Request, Response } from "express";
 import Item from "../models/item.model.ts";
 import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import multer from "multer";
-import { createItemSchema } from "../schema/item.schema.ts";
+import { createItemSchema, updateItemSchema } from "../schema/item.schema.ts";
+import User from "../models/user.model.ts";
 
 dotenv.config();
 
@@ -132,4 +131,68 @@ const getItemById = async (req: Request, res: Response) => {
   }
 };
 
-export { getAllItems, createItem, getItemById };
+const updateItem = async (req: Request, res: Response) => {
+  try {
+    const item = await Item.findById(req.params.id);
+
+    const validateData = updateItemSchema.safeParse(req.body);
+
+    if (!validateData.success) {
+      return res
+        .status(400)
+        .json({ errors: validateData.error.flatten().fieldErrors });
+    }
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    if (item.userId.toString() !== req.user!.id) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this item" });
+    }
+
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
+      validateData.data,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.json({ message: "Item updated successfully", item: updatedItem });
+  } catch (error: any) {
+    console.error("Error updating item:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const deleteItem = async (req: Request, res: Response) => {
+  try {
+    const item = await Item.findById(req.params.id);
+
+    const userId = req.user?.id;
+
+    const isAdmin = await User.findById(userId, "isAdmin");
+
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    if (item.userId.toString() !== req.user!.id && isAdmin) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this item" });
+    }
+
+    await item.deleteOne();
+    res.json({ message: "Item removed successfully" });
+  } catch (error: any) {
+    console.error("Error deleting item:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export { getAllItems, createItem, getItemById, updateItem, deleteItem };
