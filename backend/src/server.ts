@@ -23,8 +23,10 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 import authRouter from "./routes/auth.router.ts";
+import itemRouter from "./routes/item.routes.ts";
 
 app.use("/api/auth", authRouter);
+app.use("/api/items", itemRouter);
 
 app.listen(port, async () => {
   console.log(`Server is running on http://localhost:${port}`);
