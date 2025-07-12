@@ -1,20 +1,68 @@
 import React, { useState } from "react";
 import Heading from "./Heading";
 import TextInput from "./TextInput";
-import Button from "./Button"; // new reusable button
-import Divider from "./Divider"; // new optional component for "or" separator
+import Button from "./Button";
+import Divider from "./Divider";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ email, password });
+    setError("");
+    setLoading(true);
+
+    try {
+      console.log("Submitting login form with:", { email, password });
+
+      const response = await fetch("http://localhost:3000/api/auth/signin", {
+        // Replace with your backend URL
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      console.log("Response status:", response.status);
+
+      const data = await response.json();
+
+      console.log("Login response:", data);
+
+      if (response.ok) {
+        console.log("Login successful:", data);
+        navigate("/");
+        // You might want to store the token and user data (e.g., in localStorage or context)
+        // and then redirect the user to a dashboard or home page.
+        // For example:
+        // localStorage.setItem("token", data.token);
+        // localStorage.setItem("user", JSON.stringify(data.user));
+        // window.location.href = "/dashboard";
+      } else {
+        setError(
+          data.error ||
+            data.errors?.[0]?.message ||
+            "Login failed. Please try again."
+        );
+      }
+    } catch (err) {
+      console.error("Network error or unexpected issue:", err);
+      setError("An unexpected error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {
     console.log("Google login clicked");
+    // Implement Google OAuth logic here
   };
 
   return (
@@ -34,6 +82,8 @@ const LoginForm = () => {
             Login
           </Heading>
 
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
           <TextInput
             label="Email"
             type="email"
@@ -52,8 +102,8 @@ const LoginForm = () => {
             placeholder="Enter password"
           />
 
-          <Button type="submit" variant="primary" fullWidth>
-            Login
+          <Button type="submit" variant="primary" fullWidth disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </Button>
 
           <Divider>or</Divider>
@@ -63,9 +113,22 @@ const LoginForm = () => {
             variant="outline"
             onClick={handleGoogleLogin}
             fullWidth
+            disabled={loading}
           >
             Sign in with Google
           </Button>
+
+          <div className="relative text-center text-slate-500 text-sm font-medium">
+            <span className="relative bg-white px-3">
+              Not registered?
+              <a
+                href="/signup"
+                className="text-emerald-600 hover:underline ml-1"
+              >
+                Create an account
+              </a>
+            </span>
+          </div>
         </form>
       </main>
     </div>
