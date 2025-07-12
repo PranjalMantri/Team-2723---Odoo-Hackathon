@@ -1,12 +1,9 @@
 import ListItemForm from './components/ListItemForm';
 import SignupForm from './components/SignupForm';
 import LoginForm from './components/LoginForm'
-<<<<<<< Updated upstream
 import ItemDetail from './components/ItemDetail';
 import UserProfile from './components/UserProfile';
-=======
 import AdminPanel from './components/AdminPanel';
->>>>>>> Stashed changes
 
 const App=()=> {
   const item = {
@@ -34,11 +31,8 @@ const App=()=> {
   
   return(
     <>
-<<<<<<< Updated upstream
     <UserProfile user={mockUser}/>
-=======
     <AdminPanel/>
->>>>>>> Stashed changes
     </>
   )
 }
