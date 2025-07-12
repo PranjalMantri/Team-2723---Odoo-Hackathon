@@ -32,7 +32,16 @@ const ConditionEnum = z.enum([
   "For Parts/Not Working",
 ]);
 
-const ItemTypeEnum = z.enum(["Sell", "Donate", "Exchange"]);
+const ItemTypeEnum = z.enum([
+  "Shirts",
+  "Pants",
+  "Accessories",
+  "Shoes",
+  "Bags",
+  "Other",
+]);
+
+const ListingTypeEnum = z.enum(["swap", "giveaway", "sell"]);
 
 export const createItemSchema = z.object({
   title: z
@@ -47,8 +56,12 @@ export const createItemSchema = z.object({
   size: SizeEnum,
   condition: ConditionEnum,
   type: ItemTypeEnum,
-  price: z.number().min(0, { message: "Price must be a positive number." }),
+  price: z
+    .number()
+    .min(0, { message: "Price must be a positive number." })
+    .default(0),
   tags: z.array(z.string()).optional(),
+  listingType: ListingTypeEnum.default("sell"),
 });
 
 export const updateItemSchema = z.object({

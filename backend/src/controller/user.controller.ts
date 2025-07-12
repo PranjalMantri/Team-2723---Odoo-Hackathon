@@ -1,3 +1,5 @@
+import Item from "../models/item.model.ts";
+import SwapRequest from "../models/swap.model.ts";
 import User from "../models/user.model.ts";
 import { signinSchema, signupSchema } from "../schema/user.schema.ts";
 import { Request, Response } from "express";
@@ -106,4 +108,27 @@ const me = async (req: Request, res: Response) => {
   return res.status(200).json({ user: userResponse });
 };
 
-export { signup, signin, me };
+const getUserSwapCount = async (req: Request, res: Response) => {
+  const userId = req.user!.id;
+
+  try {
+    const userOwnedItems = await Item.find({ userId: userId }).select("_id");
+    const userOwnedItemIds = userOwnedItems.map((item) => item._id);
+
+    const swapCount = await SwapRequest.countDocuments({
+      $or: [
+        { requesterUserId: userId },
+        { offeredItemId: { $in: userOwnedItemIds } },
+        { requestedItemId: { $in: userOwnedItemIds } },
+      ],
+      status: { $in: ["accepted", "completed"] },
+    });
+
+    res.json({ totalSwaps: swapCount });
+  } catch (error: any) {
+    console.error("Error getting user swap count:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export { signup, signin, me, getUserSwapCount };

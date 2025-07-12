@@ -10,9 +10,16 @@ interface ItemInput {
   condition: string;
   imageUrls?: string[];
   tags?: string[];
-  listingType: "swap" | "giveaway" | "sale";
-  pointsCost?: number;
-  status?: "available" | "pending_swap" | "swapped" | "redeemed" | "rejected";
+  listingType: "swap" | "giveaway" | "sell";
+  pointsCost: number;
+  status:
+    | "available"
+    | "in_review"
+    | "pending_swap"
+    | "swapped"
+    | "redeemed"
+    | "rejected"
+    | "pending_redemption";
   isApproved?: boolean;
 }
 
@@ -35,21 +42,29 @@ const itemSchema = new Schema(
     tags: { type: [String], default: [] },
     listingType: {
       type: String,
-      enum: ["swap", "giveaway", "sale"],
+      enum: ["swap", "giveaway", "sell"],
       required: true,
-      default: "swap",
+      default: "sell",
     },
     pointsCost: {
       type: Number,
       required: function (this: ItemDocument) {
-        return this.listingType === "sale";
+        return this.listingType === "sell";
       },
       min: 0,
     },
     status: {
       type: String,
-      enum: ["available", "pending_swap", "swapped", "redeemed", "rejected"],
-      default: "available",
+      enum: [
+        "available",
+        "in_review",
+        "pending_swap",
+        "swapped",
+        "redeemed",
+        "rejected",
+        "pending_redemption",
+      ],
+      default: "in_review",
     },
     isApproved: { type: Boolean, default: false },
   },

@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-export const protect = async (
+export const authMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -47,10 +47,15 @@ export const authorizeAdmin = (
   res: Response,
   next: NextFunction
 ) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Not authorized, no user" });
+  }
+
+  console.log("User:", req.user);
   if (!req.user || !req.user.isAdmin) {
     return res.status(403).json({ message: "Not authorized as an admin" });
   }
   next();
 };
 
-export default protect;
+export default authMiddleware;

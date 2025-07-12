@@ -22,13 +22,17 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
-import authRouter from "./routes/auth.router.ts";
+import authRouter from "./routes/auth.routes.ts";
 import itemRouter from "./routes/item.routes.ts";
 import swapRouter from "./routes/swap.routes.ts";
+import redemptionRouter from "./routes/redemption.routes.ts";
+import adminRouter from "./routes/admin.routes.ts";
 
 app.use("/api/auth", authRouter);
 app.use("/api/items", itemRouter);
 app.use("/api/swaps", swapRouter);
+app.use("/api/redemptions", redemptionRouter);
+app.use("/api/admin", adminRouter);
 
 app.listen(port, async () => {
   console.log(`Server is running on http://localhost:${port}`);
