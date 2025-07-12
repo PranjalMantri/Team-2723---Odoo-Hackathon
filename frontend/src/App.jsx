@@ -4,6 +4,7 @@ import LoginForm from './components/LoginForm'
 import UserProfile from './components/UserProfile';
 import AdminPanel from './components/AdminPanel';
 import ItemDetailPage from './components/ItemDetailPage';
+import ReWearLanding from './components/ReWearLanding';
 
 
 const App=()=> {
@@ -32,7 +33,7 @@ const App=()=> {
   
   return(
     <>
-      <LoginForm/>
+      <ReWearLanding/>
     </>
   )
 }

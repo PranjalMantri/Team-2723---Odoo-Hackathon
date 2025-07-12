@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Recycle, Users, Sparkles, Star, ArrowRight, Shirt, Heart, Globe,Smartphone,RefreshCw } from 'lucide-react';
-import StepCard from './components/StepCard'
-import ListItemForm from './components/ListItemForm';
+import StepCard from './StepCard'
+import ListItemForm from './ListItemForm';
 
 const ReWearLanding = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
