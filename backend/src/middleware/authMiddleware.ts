@@ -1,46 +1,56 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import User, { UserDocument } from "../models/user.model.ts";
 
-declare module "express" {
-  interface Request {
-    user?: {
-      id: string;
-      email: string;
-    };
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserDocument;
+    }
   }
 }
 
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.token;
+export const protect = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let token;
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      id: string;
-      email: string;
-      iat: number;
-      exp: number;
-    };
+  if (req.cookies.token) {
+    try {
+      token = req.cookies.token;
+      const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
 
-    req.user = {
-      id: decoded.id,
-      email: decoded.email,
-    };
+      req.user = await User.findById(decoded.id).select("-password");
 
-    next();
-  } catch (err) {
-    if (err instanceof jwt.TokenExpiredError) {
-      return res.status(401).json({ error: "Token expired." });
+      if (!req.user) {
+        return res
+          .status(401)
+          .json({ message: "Not authorized, user not found" });
+      }
+
+      next();
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      res.status(401).json({ message: "Not authorized, token failed" });
     }
-    if (err instanceof jwt.JsonWebTokenError) {
-      return res
-        .status(401)
-        .json({ error: "Invalid token, authorization denied." });
-    }
-    console.error("Auth middleware error:", err);
-    return res
-      .status(500)
-      .json({ error: "Server error, failed to authenticate token." });
+  }
+
+  if (!token) {
+    res.status(401).json({ message: "Not authorized, no token" });
   }
 };
 
-export default authMiddleware;
+export const authorizeAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({ message: "Not authorized as an admin" });
+  }
+  next();
+};
+
+export default protect;

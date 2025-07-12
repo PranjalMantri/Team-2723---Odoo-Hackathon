@@ -1,15 +1,16 @@
 import mongoose, { Schema, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
-interface UserInput {
+export interface UserInput {
   email: string;
   password: string;
   fullName: string;
   profilePicture?: string;
   isAdmin: boolean;
+  pointsBalance: number;
 }
 
-interface UserDocument extends UserInput, Document {
+export interface UserDocument extends UserInput, Document {
   _id: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -40,6 +41,11 @@ const userSchema = new Schema(
     isAdmin: {
       type: Boolean,
       default: false,
+    },
+    pointsBalance: {
+      type: Number,
+      default: 0,
+      min: 0,
     },
   },
   {

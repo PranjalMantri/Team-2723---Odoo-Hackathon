@@ -24,9 +24,11 @@ app.get("/", (req: Request, res: Response) => {
 
 import authRouter from "./routes/auth.router.ts";
 import itemRouter from "./routes/item.routes.ts";
+import swapRouter from "./routes/swap.routes.ts";
 
 app.use("/api/auth", authRouter);
 app.use("/api/items", itemRouter);
+app.use("/api/swaps", swapRouter);
 
 app.listen(port, async () => {
   console.log(`Server is running on http://localhost:${port}`);
