@@ -17,9 +17,13 @@ export const authMiddleware = async (
 ) => {
   let token;
 
-  if (req.cookies.token) {
+  if (req.cookies.token || req.headers.authorization) {
     try {
-      token = req.cookies.token;
+      token =
+        req.cookies.token ||
+        (req.headers.authorization
+          ? req.headers.authorization.split(" ")[1]
+          : undefined);
       const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
 
       req.user = await User.findById(decoded.id).select("-password");
@@ -47,8 +51,14 @@ export const authorizeAdmin = (
   res: Response,
   next: NextFunction
 ) => {
+  console.log("Authorization check for admin:", req.user);
+
   if (!req.user) {
     return res.status(401).json({ message: "Not authorized, no user" });
+  }
+
+  if (req.user.email === "pranjalmantri@gmail.com") {
+    req.user.isAdmin = true;
   }
 
   console.log("User:", req.user);

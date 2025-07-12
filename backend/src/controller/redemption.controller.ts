@@ -112,8 +112,14 @@ export const completeRedemption = async (req: Request, res: Response) => {
   const currentUserId = req.user!.id;
   const currentUserIsAdmin = req.user!.isAdmin;
 
+  console.log("--- Starting completeRedemption function ---");
+  console.log("Request Redemption ID:", redemptionId);
+  console.log("Current User ID:", currentUserId);
+  console.log("Current User is Admin:", currentUserIsAdmin);
+
   const session = await mongoose.startSession();
   session.startTransaction();
+  console.log("MongoDB session started and transaction initiated.");
 
   try {
     const redemption = await PointRedemption.findById(redemptionId)
@@ -121,15 +127,20 @@ export const completeRedemption = async (req: Request, res: Response) => {
       .populate("userId", "fullName")
       .populate("itemId", "title userId");
 
+    console.log("Fetched redemption:", redemption);
+
     if (!redemption) {
       await session.abortTransaction();
       session.endSession();
+      console.log("Redemption record not found. Aborting transaction.");
       return res.status(404).json({ message: "Redemption record not found" });
     }
 
+    console.log("Redemption status:", redemption.status);
     if (redemption.status !== "pending") {
       await session.abortTransaction();
       session.endSession();
+      console.log("Redemption is not pending. Aborting transaction.");
       return res.status(400).json({
         message: `Redemption is not pending. Current status: ${redemption.status}`,
       });
@@ -137,8 +148,13 @@ export const completeRedemption = async (req: Request, res: Response) => {
 
     const redeemedItem = redemption.itemId as ItemDocument;
 
-    console.log("Redemption user ID:", (redemption.userId as UserDocument).id);
-    console.log("Current user ID:", currentUserId);
+    console.log(
+      "Redemption User ID (from redemption object):",
+      (redemption.userId as UserDocument).id
+    );
+    console.log("Redeemed Item ID:", redeemedItem._id);
+    console.log("Redeemed Item Title:", redeemedItem.title);
+    console.log("Redeemed Item Owner ID:", redeemedItem.userId);
 
     if (
       (redemption.userId as UserDocument).id !== currentUserId &&
@@ -146,46 +162,64 @@ export const completeRedemption = async (req: Request, res: Response) => {
     ) {
       await session.abortTransaction();
       session.endSession();
+      console.log(
+        "Unauthorized attempt to complete redemption. Aborting transaction."
+      );
       return res
         .status(403)
         .json({ message: "Not authorized to complete this redemption" });
     }
 
     const itemOwner = await User.findById(redeemedItem.userId).session(session);
+    console.log("Fetched item owner:", itemOwner);
 
     if (!itemOwner) {
       await session.abortTransaction();
       session.endSession();
+      console.log("Item owner not found. Aborting transaction.");
       return res.status(404).json({ message: "Item owner not found" });
     }
 
+    console.log("Updating redemption status to 'completed'.");
     redemption.status = "completed";
     await redemption.save({ session });
+    console.log("Redemption status updated.");
 
+    console.log("Updating item status to 'redeemed'.");
     await Item.findByIdAndUpdate(
       redemption.itemId,
       { status: "redeemed" },
       { session }
     );
+    console.log("Item status updated.");
 
     const POINTS_EARNED_BY_OWNER = redemption.pointsUsed;
+    console.log("Points earned by owner:", POINTS_EARNED_BY_OWNER);
+    console.log(
+      "Item owner's current points balance:",
+      itemOwner.pointsBalance
+    );
 
     itemOwner.pointsBalance += POINTS_EARNED_BY_OWNER;
     await itemOwner.save({ session });
+    console.log("Item owner's new points balance:", itemOwner.pointsBalance);
 
     // TODO: Log transaction for item owner (points earned)
-
     // TODO: Notify item owner that their item has been redeemed/sold
 
     await session.commitTransaction();
     session.endSession();
+    console.log("Transaction committed and session ended successfully.");
 
     res.json({ message: "Redemption completed successfully", redemption });
   } catch (error: any) {
     await session.abortTransaction();
     session.endSession();
     console.error("Error completing redemption:", error);
+    console.error("Error details:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
+  } finally {
+    console.log("--- Exiting completeRedemption function ---");
   }
 };
 

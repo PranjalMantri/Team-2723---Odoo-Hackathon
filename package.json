@@ -16,5 +16,8 @@
     "url": "https://github.com/PranjalMantri/Team-2723---Odoo-Hackathon/issues"
   },
   "homepage": "https://github.com/PranjalMantri/Team-2723---Odoo-Hackathon#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "react-hot-toast": "^2.5.2"
+  }
 }

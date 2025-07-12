@@ -54,9 +54,9 @@ const App = () => {
   };
 
   return (
-    <>
+    <div>
       <ReWearLanding />
-    </>
+    </div>
   );
 };
 export default App;

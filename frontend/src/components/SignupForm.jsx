@@ -229,7 +229,11 @@ const SignupForm = () => {
                     ? "Confirm Password"
                     : field.charAt(0).toUpperCase() + field.slice(1)
                 }
-                type={field.includes("password") ? "password" : "text"}
+                type={
+                  field.includes("password") || field.includes("confirm")
+                    ? "password"
+                    : "text"
+                }
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
@@ -262,7 +266,7 @@ const SignupForm = () => {
             <span className="relative bg-white px-3">
               Already registered?
               <a
-                href="/signup"
+                href="/login"
                 className="text-emerald-600 hover:underline ml-1"
               >
                 Log In

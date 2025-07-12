@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+
+import { useNavigate } from "react-router-dom";
 import {
   ChevronRight,
   Users,
@@ -17,6 +19,18 @@ import { Link } from "react-router-dom";
 const ReWearLanding = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
+
+  const handleListAnItemClick = () => {
+    const token = localStorage.getItem("authToken"); // Replace 'authToken' with the actual key you use for your token
+
+    if (token) {
+      navigate("/list-item"); // Replace '/list-item' with the actual path to your listing page
+    } else {
+      // Optional: Redirect to login or show a message if no token is found
+      navigate("/login");
+    }
+  };
 
   useEffect(() => {
     setIsVisible(true);
@@ -112,6 +126,7 @@ const ReWearLanding = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
       {/* Header */}
+
       <header className="bg-white/80 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
@@ -172,11 +187,17 @@ const ReWearLanding = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <button className="group bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center">
+            <button
+              onClick={() => navigate("/home")}
+              className="group bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-xl hover:shadow-2xl flex items-center"
+            >
               Start Swapping
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="border-2 border-slate-300 text-slate-700 px-8 py-4 rounded-full text-lg font-semibold hover:border-emerald-500 hover:text-emerald-600 transition-all duration-300 flex items-center">
+            <button
+              onClick={() => navigate("/home")}
+              className="border-2 border-slate-300 text-slate-700 px-8 py-4 rounded-full text-lg font-semibold hover:border-emerald-500 hover:text-emerald-600 transition-all duration-300 flex items-center"
+            >
               Browse Items
               <ChevronRight className="ml-2 h-5 w-5" />
             </button>
@@ -291,7 +312,10 @@ const ReWearLanding = () => {
             swapping today and be part of the solution!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-emerald-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+            <button
+              onClick={handleListAnItemClick}
+              className="bg-white text-emerald-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center"
+            >
               <Shirt className="mr-2 h-5 w-5" />
               List an Item
             </button>

@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
 import { createItemSchema, updateItemSchema } from "../schema/item.schema.ts";
 import User from "../models/user.model.ts";
-import { count } from "console";
 
 dotenv.config();
 
@@ -203,7 +202,11 @@ const getUserItems = async (req: Request, res: Response) => {
     const userId = req.user?.id;
     const items = await Item.find({ userId }).sort({ createdAt: -1 });
 
-    res.json({ items, count: items.length });
+    if (!items || items.length === 0) {
+      return res.json([]);
+    }
+
+    res.json(items);
   } catch (error: any) {
     console.error("Error getting user items:", error);
     res.status(500).json({ message: "Server error", error: error.message });

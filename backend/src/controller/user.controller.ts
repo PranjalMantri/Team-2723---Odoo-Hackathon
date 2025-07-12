@@ -26,6 +26,8 @@ const signup = async (req: Request, res: Response) => {
     email: validateUser.data.email,
     password: validateUser.data.password,
     fullName: validateUser.data.fullName,
+    profilePicture: "https://avatar.iran.liara.run/public/1",
+    pointsBalance: 10,
   });
 
   if (!user) {
@@ -99,10 +101,18 @@ const me = async (req: Request, res: Response) => {
     return res.status(404).json({ error: "User not found" });
   }
 
+  if (user.email === "pranjalmantri@gmail.com") {
+    user.isAdmin = true;
+  }
+
   const userResponse = {
     id: user._id,
     email: user.email,
     fullName: user.fullName,
+    points: user.pointsBalance,
+    isAdmin: user.isAdmin,
+    profilePicture: user.profilePicture,
+    createdAt: user.createdAt,
   };
 
   return res.status(200).json({ user: userResponse });
@@ -131,4 +141,31 @@ const getUserSwapCount = async (req: Request, res: Response) => {
   }
 };
 
-export { signup, signin, me, getUserSwapCount };
+const getUserById = async (req: Request, res: Response) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userResponse = {
+      id: user._id,
+      email: user.email,
+      fullName: user.fullName,
+      points: user.pointsBalance,
+      isAdmin: user.isAdmin,
+    };
+
+    return res.status(200).json({ user: userResponse });
+  } catch (error: any) {
+    console.error("Error getting user by ID:", error);
+    return res
+      .status(500)
+      .json({ error: "Server error", message: error.message });
+  }
+};
+
+export { signup, signin, me, getUserSwapCount, getUserById };

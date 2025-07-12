@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import Item, { ItemDocument } from "../models/item.model.ts";
-import User, { UserDocument } from "../models/user.model.ts";
+import Item from "../models/item.model.ts";
 
 const getReviewItems = async (req: Request, res: Response) => {
   try {
+    console.log("Admin: Fetching items in review...");
     const itemsInReview = await Item.find({ status: "in_review" })
       .populate("userId", "fullName email profilePicture")
       .sort({ createdAt: 1 });
@@ -32,6 +32,7 @@ const approveItem = async (req: Request, res: Response) => {
     }
 
     item.status = "available";
+    item.isApproved = true;
     await item.save();
 
     // TODO: Optionally notify the item owner about the approval
@@ -60,6 +61,7 @@ const rejectItem = async (req: Request, res: Response) => {
     }
 
     item.status = "rejected";
+    item.isApproved = false;
     await item.save();
 
     // TODO: Optionally notify the item owner about the rejection and reason

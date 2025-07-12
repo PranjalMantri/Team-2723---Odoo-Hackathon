@@ -22,29 +22,18 @@ const LoginForm = () => {
       console.log("Submitting login form with:", { email, password });
 
       const response = await fetch("http://localhost:3000/api/auth/signin", {
-        // Replace with your backend URL
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
-
-      console.log("Response status:", response.status);
-
       const data = await response.json();
 
-      console.log("Login response:", data);
-
       if (response.ok) {
-        console.log("Login successful:", data);
-        navigate("/");
-        // You might want to store the token and user data (e.g., in localStorage or context)
-        // and then redirect the user to a dashboard or home page.
-        // For example:
-        // localStorage.setItem("token", data.token);
-        // localStorage.setItem("user", JSON.stringify(data.user));
-        // window.location.href = "/dashboard";
+        localStorage.setItem("token", data.token);
+        navigate("/home");
       } else {
         setError(
           data.error ||
