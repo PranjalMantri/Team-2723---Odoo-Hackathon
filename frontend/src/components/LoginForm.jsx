@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import Heading from './Heading';
+import TextInput from './TextInput';
+import Button from './Button'; // new reusable button
+import Divider from './Divider'; // new optional component for "or" separator
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -6,12 +10,10 @@ const LoginForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Add login logic
     console.log({ email, password });
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Add Google login integration
     console.log('Google login clicked');
   };
 
@@ -35,52 +37,41 @@ const LoginForm = () => {
       </header>
 
       <main className="flex justify-center py-10">
-        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6 bg-white/80 p-8 rounded-2xl shadow-sm">
-          <h1 className="text-2xl font-bold mb-4">Login</h1>
-
-          <label className="block">
-            <span className="text-base font-medium text-slate-800">Email</span>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-2 w-full p-3 rounded-xl border border-emerald-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-emerald-300"
-            />
-          </label>
-
-          <label className="block">
-            <span className="text-base font-medium text-slate-800">Password</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-2 w-full p-3 rounded-xl border border-emerald-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-emerald-300"
-            />
-          </label>
-
-          <button
-            type="submit"
-            className="w-full bg-emerald-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-emerald-600 transition duration-300"
-          >
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-md space-y-6 bg-white/80 p-8 rounded-2xl shadow-sm"
+        >
+          <Heading level={1} className="text-2xl font-bold mb-4">
             Login
-          </button>
+          </Heading>
 
-          <div className="relative text-center text-slate-500 text-sm font-medium">
-            <span className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-slate-300"></span>
-            </span>
-            <span className="relative bg-white px-3">or</span>
-          </div>
+          <TextInput
+            label="Email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            placeholder="Enter email"
+          />
 
-          <button
-            type="button"
-            onClick={handleGoogleLogin}
-            className="w-full bg-white border border-emerald-200 text-emerald-700 px-6 py-3 rounded-full font-semibold hover:bg-emerald-50 transition duration-300"
-          >
+          <TextInput
+            label="Password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            placeholder="Enter password"
+          />
+
+          <Button type="submit" variant="primary" fullWidth>
+            Login
+          </Button>
+
+          <Divider>or</Divider>
+
+          <Button type="button" variant="outline" onClick={handleGoogleLogin} fullWidth>
             Sign in with Google
-          </button>
+          </Button>
         </form>
       </main>
     </div>
