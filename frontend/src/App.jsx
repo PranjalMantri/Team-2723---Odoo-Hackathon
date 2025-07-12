@@ -1,40 +1,62 @@
-import ListItemForm from './components/ListItemForm';
-import SignupForm from './components/SignupForm';
-import LoginForm from './components/LoginForm'
-import UserProfile from './components/UserProfile';
-import AdminPanel from './components/AdminPanel';
-import ItemDetailPage from './components/ItemDetailPage';
-import ReWearLanding from './components/ReWearLanding';
+import ReWearLanding from "./components/ReWearLanding";
 
-
-const App=()=> {
+const App = () => {
   const item = {
-    image: 'https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg',
-    title: 'Retro Graphic Tee',
-    user: 'Jay Mehta',
-    category: 'Men’s Clothing',
-    description: 'Vintage-inspired graphic t-shirt made from soft, breathable cotton. Lightly used and well-maintained.',
+    image:
+      "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
+    title: "Retro Graphic Tee",
+    user: "Jay Mehta",
+    category: "Men’s Clothing",
+    description:
+      "Vintage-inspired graphic t-shirt made from soft, breathable cotton. Lightly used and well-maintained.",
     points: 30,
-    listingType: 'Swap',
-  }
+    listingType: "Swap",
+  };
   const mockUser = {
     name: "Sophia Bennett",
     username: "sophia.b",
     joinedYear: 2021,
-    avatar: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
+    avatar:
+      "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
     points: 120,
     uploaded: 25,
     swaps: 15,
-    items: [{ image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg", title: "item1" }, { image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg", title: "item2" }],
-    ongoingSwaps: [{ name: "Olivia", details: "Dress for Jacket", status: "In Progress", image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg" }],
-    completedSwaps: [{ name: "Chloe", details: "Blouse for Skirt", date: "2023-08-15", image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg" }],
+    items: [
+      {
+        image:
+          "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
+        title: "item1",
+      },
+      {
+        image:
+          "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
+        title: "item2",
+      },
+    ],
+    ongoingSwaps: [
+      {
+        name: "Olivia",
+        details: "Dress for Jacket",
+        status: "In Progress",
+        image:
+          "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
+      },
+    ],
+    completedSwaps: [
+      {
+        name: "Chloe",
+        details: "Blouse for Skirt",
+        date: "2023-08-15",
+        image:
+          "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
+      },
+    ],
   };
-  
-  
-  return(
+
+  return (
     <>
-      <ReWearLanding/>
+      <ReWearLanding />
     </>
-  )
-}
-export default App
+  );
+};
+export default App;
