@@ -1,11 +1,11 @@
-import express, { Request, Response } from "express";
+import { Router } from "express";
 import { signup, signin, me } from "../controller/user.controller.ts";
 import authMiddleware from "../middleware/authMiddleware.ts";
 
-const app = express();
+const router = Router();
 
-app.post("/signin", signin);
-app.post("/signup", signup);
-app.get("/me", authMiddleware, me);
+router.post("/signin", signin);
+router.post("/signup", signup);
+router.get("/me", authMiddleware, me);
 
-export default app;
+export default router;
