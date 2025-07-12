@@ -3,6 +3,7 @@ import SignupForm from './components/SignupForm';
 import LoginForm from './components/LoginForm'
 import UserProfile from './components/UserProfile';
 import AdminPanel from './components/AdminPanel';
+import ItemDetailPage from './components/ItemDetailPage';
 
 
 const App=()=> {
@@ -31,8 +32,7 @@ const App=()=> {
   
   return(
     <>
-    <UserProfile user={mockUser}/>
-    <AdminPanel/>
+    <ItemDetailPage item={item}/>
     </>
   )
 }
