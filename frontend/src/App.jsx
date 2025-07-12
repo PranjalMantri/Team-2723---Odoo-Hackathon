@@ -32,7 +32,7 @@ const App=()=> {
   
   return(
     <>
-    <ItemDetailPage item={item}/>
+      <ListItemForm/>
     </>
   )
 }
