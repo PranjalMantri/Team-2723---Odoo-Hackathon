@@ -1,11 +1,10 @@
 import User from "../models/user.model.ts";
-import { signupSchema } from "../schema/user.schema.ts";
+import { signinSchema, signupSchema } from "../schema/user.schema.ts";
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const signup = async (req: Request, res: Response) => {
-  const { email, password, fullName } = req.body;
-
   const validateUser = signupSchema.safeParse(req.body);
 
   if (!validateUser.success) {
@@ -15,21 +14,17 @@ const signup = async (req: Request, res: Response) => {
   }
 
   const existingUser = await User.findOne({
-    email,
+    email: validateUser.data.email,
   });
 
   if (existingUser) {
     return res.status(409).json({ error: "User already exists" });
   }
-  const hashedPassword = await bcrypt.hash(
-    password,
-    Number(process.env.SALT_FACTOR)
-  );
 
   const user = await User.create({
-    email,
-    password: hashedPassword,
-    fullName,
+    email: validateUser.data.email,
+    password: validateUser.data.password,
+    fullName: validateUser.data.fullName,
   });
 
   if (!user) {
@@ -45,4 +40,49 @@ const signup = async (req: Request, res: Response) => {
   return res.status(201).json({ user: userResponse });
 };
 
-export { signup };
+const signin = async (req: Request, res: Response) => {
+  const validateUser = signinSchema.safeParse(req.body);
+
+  if (!validateUser.success) {
+    return res
+      .status(400)
+      .json({ errors: validateUser.error.flatten().fieldErrors });
+  }
+
+  const user = await User.findOne({ email: validateUser.data.email });
+
+  if (!user) {
+    return res.status(401).json({ error: "Invalid email or password" });
+  }
+
+  const isPasswordValid = await user.comparePassword(
+    validateUser.data.password
+  );
+
+  if (!isPasswordValid) {
+    return res.status(401).json({ error: "Invalid email or password" });
+  }
+
+  const payload = {
+    id: user._id,
+    email: user.email,
+  };
+
+  const token = jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1h" });
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "strict",
+    maxAge: 3600000,
+  });
+
+  const userResponse = {
+    id: user._id,
+    email: user.email,
+    fullName: user.fullName,
+  };
+
+  return res.status(200).json({ user: userResponse, token });
+};
+
+export { signup, signin };
