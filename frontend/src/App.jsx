@@ -2,10 +2,11 @@ import ListItemForm from './components/ListItemForm';
 import SignupForm from './components/SignupForm';
 import LoginForm from './components/LoginForm'
 import ItemDetail from './components/ItemDetail';
+import UserProfile from './components/UserProfile';
 
 const App=()=> {
   const item = {
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFYqoKTu_o3Zns2yExbst2Co84Gpc2Q1RJbA&s',
+    image: 'https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg',
     title: 'Retro Graphic Tee',
     user: 'Jay Mehta',
     category: 'Men’s Clothing',
@@ -13,11 +14,23 @@ const App=()=> {
     points: 30,
     listingType: 'Swap',
   }
+  const mockUser = {
+    name: "Sophia Bennett",
+    username: "sophia.b",
+    joinedYear: 2021,
+    avatar: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg",
+    points: 120,
+    uploaded: 25,
+    swaps: 15,
+    items: [{ image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg", title: "item1" }, { image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg", title: "item2" }],
+    ongoingSwaps: [{ name: "Olivia", details: "Dress for Jacket", status: "In Progress", image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg" }],
+    completedSwaps: [{ name: "Chloe", details: "Blouse for Skirt", date: "2023-08-15", image: "https://www.bigfootdigital.co.uk/wp-content/uploads/2020/07/image-optimisation-scaled.jpg" }],
+  };
   
   
   return(
     <>
-    <ItemDetail item={item}/>
+    <UserProfile user={mockUser}/>
     </>
   )
 }
